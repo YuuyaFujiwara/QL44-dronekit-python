@@ -389,7 +389,11 @@ def decorated_routectrl_callback(self, attr_name, value):
     elif value == 3:
         print(" value == 3rd" )
     else :
-        print(" value == other" )
+        print(" value == ", value )
+
+    # 値を戻す
+    if value != -1:
+        vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1
 
 
 
