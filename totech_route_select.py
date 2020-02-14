@@ -52,11 +52,11 @@ vehicle = connect(connection_string, wait_ready=True)
 
 # Check that vehicle is armable. 
 # This ensures home_location is set (needed when saving WP file)
-
+'''#Armableを待たない
 while not vehicle.is_armable:
     print(" Waiting for vehicle to initialise...")
     time.sleep(1)
-
+'''
 
 
 # メートル単位で移動した緯度経度を得る
