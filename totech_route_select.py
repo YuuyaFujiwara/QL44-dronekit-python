@@ -359,13 +359,11 @@ def adds_square_mission(aLocation, aSize):
     cmds.upload()
 '''
 
-
 #メッセージ受信テスト
 #デコレーターを使ってリスナーと作成する
-@vehicle.on_message('*')
+@vehicle.on_message('MISSON_*')
 def listener(self, name, message):
 	print( " message = ", name,  ", value =", message )
-
 
 
 
