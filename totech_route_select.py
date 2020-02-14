@@ -364,7 +364,7 @@ def adds_square_mission(aLocation, aSize):
 #デコレーターを使ってリスナーと作成する
 @vehicle.on_message('*')
 def listener(self, name, message):
-	print " message = ", name,  ", value =", message
+	print( " message = ", name,  ", value =", message )
 
 
 
