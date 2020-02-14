@@ -360,6 +360,15 @@ def adds_square_mission(aLocation, aSize):
 '''
 
 
+#メッセージ受信テスト
+#デコレーターを使ってリスナーと作成する
+@vehicle.on_message('*')
+def listener(self, name, message):
+	print " message = ", name,  ", value =", message
+
+
+
+
 #パラメータ変更時コールバック関数登録
 #MOMIMAKI_RT_CTRLパラメータ変更時に、ルート管理を行う。
 # ※このパラメータはdronekit-pythonからのルート管理用。船体では使用しない。        
