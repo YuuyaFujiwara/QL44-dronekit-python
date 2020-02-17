@@ -363,8 +363,10 @@ def adds_square_mission(aLocation, aSize):
 #メッセージ受信テスト
 #デコレーターを使ってリスナーと作成する
 #@vehicle.on_message(['MISSION_ACK', 'MISSION_CLEAR_ALL', 'MISSION_COUNT', 'MISSION_CURRENT', 'MISSION_ITEM', 'MISSION_ITEM_INT', 'MISSION_ITEM_REACHED', 'MISSION_REQUEST', 'MISSION_REQUEST_INT', 'MISSION_REQUEST_LIST', 'MISSION_REQUEST_PARTIAL_LIST', 'MISSION_SET_CURRENT', 'MISSION_WRITE_PARTIAL_LIST'])
-print("\n@vehicle.on_message( 'HEARTBEAT' )  using orator") 
-@vehicle.on_message( 'HEARTBEAT' )
+#print("\nAdd @vehicle.on_message( 'HEARTBEAT' )  using orator") 
+#@vehicle.on_message( 'HEARTBEAT' )
+print("\nAdd @vehicle.on_message( 'MISSION_ACK' )  using orator") 
+@vehicle.on_message( 'MISSION_ACK' )
 def listener(self, name, message):
 	print( " message = ", name,  ", value =", message )
 
