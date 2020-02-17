@@ -15,16 +15,22 @@ from __future__ import print_function
 
 
 from dronekit import connect, VehicleMode, LocationGlobalRelative, LocationGlobal, Command
+import os
 import math
 import time
 import glob
-#from os.path import expanduser
+from os.path import expanduser
 
 
-#print('current path: %s' % expanduser("~"))
 
-home_path = "C:/Users/YuyaFujiwara/Documents/GitHub/dronekit-python/examples/totech_RouteSelect/"
 global_flg_route_select_req = False
+global_flg_route_save_req = False
+#home_path = "C:/Users/YuyaFujiwara/Documents/GitHub/dronekit-python/examples/totech_RouteSelect/"
+home_path = expanduser("~")
+print('home path: %s' % home_path )
+route_path = home_path + "/QL44_Routes"
+print('route path: %s' % route_path)
+
 
 #Set up option parsing to get connection string
 import argparse  
@@ -268,10 +274,10 @@ def upload_mission(aMission):
 
 
 def download_mission():
-    """
+    '''
     Downloads the current mission and returns it in a list.
     It is used in save_mission() to get the file information to save.
-    """
+    '''
     print(" Download mission from vehicle")
     missionlist=[]
     cmds = vehicle.commands
@@ -281,7 +287,7 @@ def download_mission():
         missionlist.append(cmd)
     return missionlist
 
-def save_mission(aFileName):
+def download_and_save_mission(aFileName):
     """
     Save a mission in the Waypoint file format 
     (http://qgroundcontrol.org/mavlink/waypoint_protocol#waypoint_file_format).
@@ -303,9 +309,36 @@ def save_mission(aFileName):
         file_.write(output)
         
 
+def save_mission(mission, aFileName):
+    """
+    Save a mission in the Waypoint file format 
+    (http://qgroundcontrol.org/mavlink/waypoint_protocol#waypoint_file_format).
+    """
+    print("\nSave mission from Vehicle to file: %s" % aFileName)    
+    """
+    #Download mission from vehicle
+    missionlist = download_mission()
+    """
+    #Add file-format information
+    output='QGC WPL 110\n'
+    #Add home location as 0th waypoint
+    home = vehicle.home_location
+    output+="%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (0,1,0,16,0,0,0,0,home.lat,home.lon,home.alt,1)
+    #Add commands
+    for cmd in mission:
+        commandline="%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (cmd.seq,cmd.current,cmd.frame,cmd.command,cmd.param1,cmd.param2,cmd.param3,cmd.param4,cmd.x,cmd.y,cmd.z,cmd.autocontinue)
+        output+=commandline
+    with open(aFileName, 'w') as file_:
+        print(" Write mission to file")
+        file_.write(output)
+
+
+
+
+
 def print_mission( aMission ):
     for cmd in aMission:
-        commandline="%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (cmd.seq,cmd.current,cmd.frame,cmd.command,cmd.param1,cmd.param2,cmd.param3,cmd.param4,cmd.x,cmd.y,cmd.z,cmd.autocontinue)
+        commandline="%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (cmd.seq,cmd.current,cmd.frame,cmd.command,cmd.param1,cmd.param2,cmd.param3,cmd.param4,cmd.x,cmd.y,cmd.z,cmd.autocontinue)
         print( commandline )
 
 
@@ -318,6 +351,10 @@ def printfile(aFileName):
     with open(aFileName) as f:
         for line in f:
             print(' %s' % line.strip())        
+
+def my_makedirs(path):
+    if not os.path.isdir(path):
+        os.makedirs(path)
 
 '''
 #新たなミッションを書き込む。
@@ -359,14 +396,17 @@ def adds_square_mission(aLocation, aSize):
     cmds.upload()
 '''
 
-
+'''
 #メッセージ受信テスト
 #デコレーターを使ってリスナーと作成する
 #@vehicle.on_message(['MISSION_ACK', 'MISSION_CLEAR_ALL', 'MISSION_COUNT', 'MISSION_CURRENT', 'MISSION_ITEM', 'MISSION_ITEM_INT', 'MISSION_ITEM_REACHED', 'MISSION_REQUEST', 'MISSION_REQUEST_INT', 'MISSION_REQUEST_LIST', 'MISSION_REQUEST_PARTIAL_LIST', 'MISSION_SET_CURRENT', 'MISSION_WRITE_PARTIAL_LIST'])
-@vehicle.on_message( 'MISSION_CLEAR_ALL' )
+#print("\nAdd @vehicle.on_message( 'HEARTBEAT' )  using orator") 
+#@vehicle.on_message( 'HEARTBEAT' )
+print("\nAdd @vehicle.on_message( 'MISSION_*' )  using orator") 
+@vehicle.on_message(['MISSION_ACK', 'MISSION_CLEAR_ALL', 'MISSION_COUNT', 'MISSION_CURRENT', 'MISSION_ITEM', 'MISSION_ITEM_INT', 'MISSION_ITEM_REACHED', 'MISSION_REQUEST', 'MISSION_REQUEST_INT', 'MISSION_REQUEST_LIST', 'MISSION_REQUEST_PARTIAL_LIST', 'MISSION_SET_CURRENT', 'MISSION_WRITE_PARTIAL_LIST'])
 def listener(self, name, message):
 	print( " message = ", name,  ", value =", message )
-
+'''
 
 
 #パラメータ変更時コールバック関数登録
@@ -381,6 +421,8 @@ def decorated_routectrl_callback(self, attr_name, value):
     # `value` is the updated attribute value.
 
     global global_flg_route_select_req
+    global global_flg_route_save_req
+    #global global_flg_route_delete_req
 
     print(" CALLBACK: 'MOMIMAKI_RT_CTRL' changed to", value)
 
@@ -391,10 +433,13 @@ def decorated_routectrl_callback(self, attr_name, value):
         # 全ルートクリア
         print(" clear all route files(not yet)" )
     elif value == 1:
-        # 現在のルートをファイルに保存
-        print(" save to file current route(not yet)" )
+        print(" value == 1st" )
     elif value == 2:
         print(" value == 2nd" )
+        # 現在のルートをファイルに保存
+        print(" save to file current route(not yet)" )
+        global_flg_route_save_req = True
+        vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1  # 
     elif value == 3:
         print(" value == 3rd" )
     else :
@@ -432,7 +477,7 @@ def decorated_mode_callback(self, attr_name, value):
 # 自動ルート選択処理
 #
 def route_select_proc():
-    global global_flg_route_select_req
+    #global global_flg_route_select_req
 
     # ルートファイルを検索
     search_rslt = False
@@ -440,7 +485,7 @@ def route_select_proc():
     #for fname in glob.glob("./Routes/*.route"):
     #for fname in glob.glob("./Routes/*.waypoints"):     #とりあえずmission plannerが出力するwaypointsファイルを読み込む
     #tmppath = home_path +  "Routes/*.*"
-    for fname in glob.glob( home_path +  "Routes/*.waypoints"):     #とりあえずmission plannerが出力するwaypointsファイルを読み込む
+    for fname in glob.glob( route_path +  "/*.waypoints"):     #とりあえずmission plannerが出力するwaypointsファイルを読み込む
         mission = read_route(fname)
         if mission_distance_check( mission ):
             search_rslt = True
@@ -456,9 +501,32 @@ def route_select_proc():
         vehicle.commands.clear()
         vehicle.mode = VehicleMode("MANUAL")
 
-    # reset the flag
-    global_flg_route_select_req = False 
     
+
+
+#
+# ルート保存処理
+# 船体内の現在のルートをファイル名をつけて保存する。
+#
+def route_save_proc():
+
+    #機体からダウンロード
+    mission = download_mission()
+    print_mission( mission )    #for debug
+
+    #ファイル名を決める]
+    cmd = mission[0]
+    fname = route_path +  "/rt{0}{1}.waypoints".format( cmd.y, cmd.x )
+    print( "save filename = {0}\n".format(fname) )
+
+    #ルートファイル保存
+    save_mission( mission, fname )
+
+
+
+
+
+
 
 
 
@@ -492,12 +560,32 @@ except:
 
 # ここからメイン
 
+# 保存フォルダ作成
+my_makedirs(route_path)
+
+# 初期化
+vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1
+
+
 # for debug 
 # とりあえず無限ループ
 while True:
+#global変数
+    global global_flg_route_select_req
+    global global_flg_route_save_req
+
     # フラグが立ったらルート選択処理を行う
     if global_flg_route_select_req==True:
         route_select_proc()
+        global_flg_route_select_req = False     # flag reset
+
+
+    # フラグが立ったらルート保存処理を行う
+    if global_flg_route_save_req==True:
+        route_save_proc()
+        global_flg_route_save_req = False     # flag reset
+
+    #print("loop.")
     time.sleep(1)
     
 
