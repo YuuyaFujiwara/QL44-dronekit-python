@@ -323,11 +323,10 @@ def save_mission(mission, aFileName):
     output='QGC WPL 110\n'
 
     # とりあえずhome_locatrionは保存しない。
-    '''
     #Add home location as 0th waypoint
     home = vehicle.home_location
     output+="%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (0,1,0,16,0,0,0,0,home.lat,home.lon,home.alt,1)
-    '''
+
 
     #Add commands
     for cmd in mission:
