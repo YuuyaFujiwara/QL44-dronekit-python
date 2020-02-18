@@ -233,7 +233,8 @@ def mission_distance_check( aMission ):
     vehicle_loc = vehicle.location.global_frame
     mission_home = LocationGlobal( aMission[0].x, aMission[0].y )   #ミッションの最初のXとY
     dist = get_distance_metres( vehicle_loc, mission_home )
-    if dist < 3.0:
+    print( "mission_distance = {0}".format(dist) )
+    if dist < 10.0:
         return True
     else:
         return False
@@ -475,9 +476,9 @@ def decorated_mode_callback(self, attr_name, value):
     global global_flg_route_select_req
 
     print(" CALLBACK: Mode changed to", value)
-    # ModeがAutoになった場合に、ルートを決める。
+    # ModeがHOLDになった場合に、ルートを決める。
     # ルートが決まらなかったら、STABILIZEにモードを変える。
-    if value==VehicleMode("GUIDED"):
+    if value==VehicleMode("HOLD"):
         global_flg_route_select_req = True
 
 
@@ -504,6 +505,10 @@ def route_select_proc():
         #for debug
         print_mission( mission )
         upload_mission( mission )
+
+        # home location設定してみる
+        set_home_loc( mission[0].y, mission[0].x  )
+
     else:
         print( "No route found\n")
         vehicle.commands.clear()
@@ -524,7 +529,7 @@ def route_save_proc():
 
     #ファイル名を決める]
     cmd = mission[0]
-    fname = route_path +  "/rt{0}{1}.waypoints".format( cmd.y, cmd.x )
+    fname = route_path +  "/rt{0}_{1}.waypoints".format( cmd.y, cmd.x )
     print( "save filename = {0}\n".format(fname) )
 
     #ルートファイル保存
@@ -532,8 +537,14 @@ def route_save_proc():
 
 
 
-
-
+# home location設定する。
+def set_home_loc( alat, alng ):
+    tmploc = vehicle.location.global_frame
+    tmploc.lat = alat
+    tmploc.lon = alng
+    #tmploc.alt = 100
+    vehicle.home_location = tmploc
+    print( "vehicle.home_location = ({0},{1},{2})".format(vehicle.home_location.lat, vehicle.home_location.lon, vehicle.home_location.alt ) )
 
 
 
@@ -573,6 +584,12 @@ my_makedirs(route_path)
 
 # 初期化
 vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1
+
+
+
+
+
+
 
 
 # for debug 
