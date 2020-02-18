@@ -22,6 +22,9 @@ import glob
 from os.path import expanduser
 
 
+global global_flg_route_select_req
+global global_flg_route_save_req
+global home_path
 
 global_flg_route_select_req = False
 global_flg_route_save_req = False
