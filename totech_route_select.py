@@ -24,16 +24,21 @@ from os.path import expanduser
 
 global global_flg_route_select_req
 global global_flg_route_save_req
+global global_flg_route_clear_req
 global home_path
+global ROUTEFILE_EXT
 
 global_flg_route_select_req = False
 global_flg_route_save_req = False
+global_flg_route_clear_req = False
+
 #home_path = "C:/Users/YuyaFujiwara/Documents/GitHub/dronekit-python/examples/totech_RouteSelect/"
 home_path = expanduser("~")
 print('home path: %s' % home_path )
 route_path = home_path + "/QL44/Routes"
 print('route path: %s' % route_path)
 
+ROUTEFILE_EXT = ".waypoints"
 
 #Set up option parsing to get connection string
 import argparse  
@@ -364,6 +369,7 @@ def printfile(aFileName):
 # フォルダを作成
 # すでに存在する場合は何もしない。
 # 深い階層のフォルダも作成するはず。(os.makedirs()を使用しているので)
+# 注意：親フォルダの所有者がrootの場合、失敗する。
 def my_makedirs(path):
     if not os.path.isdir(path):
         os.makedirs(path)
@@ -444,6 +450,7 @@ def decorated_routectrl_callback(self, attr_name, value):
     elif value == 9999 :
         # 全ルートクリア
         print(" clear all route files(not yet)" )
+	global_flg_route_clear_req = TRue
     elif value == 1:
         print(" value == 1st" )
     elif value == 2:
@@ -494,10 +501,7 @@ def route_select_proc():
     # ルートファイルを検索
     search_rslt = False
     mission = []
-    #for fname in glob.glob("./Routes/*.route"):
-    #for fname in glob.glob("./Routes/*.waypoints"):     #とりあえずmission plannerが出力するwaypointsファイルを読み込む
-    #tmppath = home_path +  "Routes/*.*"
-    for fname in glob.glob( route_path +  "/*.waypoints"):     #とりあえずmission plannerが出力するwaypointsファイルを読み込む
+    for fname in glob.glob( route_path +  "/*" + ROUTEFILE_EXT ):  
         mission = read_route(fname)
         if mission_distance_check( mission ):
             search_rslt = True
@@ -532,11 +536,21 @@ def route_save_proc():
 
     #ファイル名を決める]
     cmd = mission[0]
-    fname = route_path +  "/rt{0}_{1}.waypoints".format( cmd.y, cmd.x )
+    fname = route_path +  "/rt{0}_{1}{2}".format( cmd.y, cmd.x, ROUTEFILE_EXT )
     print( "save filename = {0}\n".format(fname) )
 
     #ルートファイル保存
     save_mission( mission, fname )
+
+#
+# ルートファイル削除処理
+#
+def route_clear_proc():
+    # ファイル削除ループ
+    for fname in glob.glob( route_path +  "/*" + ROUTEFILE_EXT ):  
+        if os.path.isfile(fname):
+            os.remove(fname)
+
 
 
 
@@ -602,6 +616,7 @@ while True:
 #global変数
     global global_flg_route_select_req
     global global_flg_route_save_req
+    global global_flg_route_clear_req
 
     # フラグが立ったらルート選択処理を行う
     if global_flg_route_select_req==True:
@@ -613,6 +628,14 @@ while True:
     if global_flg_route_save_req==True:
         route_save_proc()
         global_flg_route_save_req = False     # flag reset
+
+
+    # フラグが立ったらルートファイル削除処理を行う
+    if global_flg_route_clear_req==True:
+        route_clear_proc()
+        global_flg_route_clear_req = False     # flag reset
+
+
 
     #print("loop.")
     time.sleep(1)
