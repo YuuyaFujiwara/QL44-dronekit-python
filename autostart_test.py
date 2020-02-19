@@ -56,10 +56,6 @@ vehicle = connect(connection_string, wait_ready=True)
 # ここからメイン
 
 # 初期化
-vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1
-
-
-
 
 
 
@@ -67,11 +63,12 @@ vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1
 
 # for debug 
 # とりあえず無限ループ
-count = 0
 while True:
-    print("vehicle.parameters['MOMIMAKI_RT_CTRL'] = ".format( count ) )
-    vehicle.parameters['MOMIMAKI_RT_CTRL'] = count
-    count = count + 1
-    time.sleep(1)
+    print("vehicle.mode = 'MANUAL'")
+    vehicle.mode = VehicleMode("MANUAL")
+    time.sleep(2)
     
+    print("vehicle.mode = 'GUIDED'")
+    vehicle.mode = VehicleMode("GUIDED")
+    time.sleep(2)
 
