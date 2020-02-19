@@ -22,23 +22,8 @@ import glob
 from os.path import expanduser
 
 
-global global_flg_route_select_req
-global global_flg_route_save_req
-global global_flg_route_clear_req
-global home_path
-global ROUTEFILE_EXT
 
-global_flg_route_select_req = False
-global_flg_route_save_req = False
-global_flg_route_clear_req = False
 
-#home_path = "C:/Users/YuyaFujiwara/Documents/GitHub/dronekit-python/examples/totech_RouteSelect/"
-home_path = expanduser("~")
-print('home path: %s' % home_path )
-route_path = home_path + "/QL44/Routes"
-print('route path: %s' % route_path)
-
-ROUTEFILE_EXT = ".waypoints"
 
 #Set up option parsing to get connection string
 import argparse  
@@ -69,10 +54,6 @@ vehicle = connect(connection_string, wait_ready=True)
 
 
 # ここからメイン
-
-# 保存フォルダ作成
-my_makedirs(route_path)
-
 
 # 初期化
 vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1
