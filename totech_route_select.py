@@ -450,7 +450,7 @@ def decorated_routectrl_callback(self, attr_name, value):
     elif value == 9999 :
         # 全ルートクリア
         print(" clear all route files(not yet)" )
-	global_flg_route_clear_req = TRue
+	global_flg_route_clear_req = True
     elif value == 1:
         print(" value == 1st" )
     elif value == 2:
@@ -458,7 +458,6 @@ def decorated_routectrl_callback(self, attr_name, value):
         # 現在のルートをファイルに保存
         print(" save to file current route(not yet)" )
         global_flg_route_save_req = True
-        vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1  # 
     elif value == 3:
         print(" value == 3rd" )
     else :
@@ -622,18 +621,21 @@ while True:
     if global_flg_route_select_req==True:
         route_select_proc()
         global_flg_route_select_req = False     # flag reset
+        vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1  # 
 
 
     # フラグが立ったらルート保存処理を行う
     if global_flg_route_save_req==True:
         route_save_proc()
         global_flg_route_save_req = False     # flag reset
+        vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1  # 
 
 
     # フラグが立ったらルートファイル削除処理を行う
     if global_flg_route_clear_req==True:
         route_clear_proc()
         global_flg_route_clear_req = False     # flag reset
+        vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1  # 
 
 
 
