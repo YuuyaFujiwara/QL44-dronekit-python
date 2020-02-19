@@ -547,8 +547,10 @@ def route_save_proc():
 def route_clear_proc():
     # ファイル削除ループ
     for fname in glob.glob( route_path +  "/*" + ROUTEFILE_EXT ):  
+        print( "{0} remove.".format(fname))
         if os.path.isfile(fname):
             os.remove(fname)
+            print( "{0} removed.".format(fname))
 
 
 
