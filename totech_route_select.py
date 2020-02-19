@@ -31,7 +31,7 @@ global_flg_route_save_req = False
 #home_path = "C:/Users/YuyaFujiwara/Documents/GitHub/dronekit-python/examples/totech_RouteSelect/"
 home_path = expanduser("~")
 print('home path: %s' % home_path )
-route_path = home_path + "/QL44_Routes"
+route_path = home_path + "/QL44/Routes"
 print('route path: %s' % route_path)
 
 
@@ -361,6 +361,9 @@ def printfile(aFileName):
         for line in f:
             print(' %s' % line.strip())        
 
+# フォルダを作成
+# すでに存在する場合は何もしない。
+# 深い階層のフォルダも作成するはず。(os.makedirs()を使用しているので)
 def my_makedirs(path):
     if not os.path.isdir(path):
         os.makedirs(path)
@@ -580,7 +583,9 @@ except:
 # ここからメイン
 
 # 保存フォルダ作成
-my_makedirs(route_path)
+#my_makedirs(route_path)
+os.makedirs(route_path, exist_ok=True) #既存の場合は何もしない
+
 
 # 初期化
 vehicle.parameters['MOMIMAKI_RT_CTRL'] = -1
