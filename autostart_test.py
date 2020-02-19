@@ -45,6 +45,10 @@ if not connection_string:
     connection_string = sitl.connection_string()
 
 
+print('Waiting')
+time.sleep(60)
+
+
 # Connect to the Vehicle
 print('Connecting to vehicle on: %s' % connection_string)
 vehicle = connect(connection_string, wait_ready=True)
