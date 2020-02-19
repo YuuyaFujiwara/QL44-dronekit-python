@@ -440,6 +440,8 @@ def decorated_routectrl_callback(self, attr_name, value):
 
     global global_flg_route_select_req
     global global_flg_route_save_req
+    global global_flg_route_clear_req
+
     #global global_flg_route_delete_req
 
     print(" CALLBACK: 'MOMIMAKI_RT_CTRL' changed to", value)
