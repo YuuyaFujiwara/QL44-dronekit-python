@@ -583,8 +583,7 @@ except:
 # ここからメイン
 
 # 保存フォルダ作成
-#my_makedirs(route_path)
-os.makedirs(route_path, exist_ok=True) #既存の場合は何もしない
+my_makedirs(route_path)
 
 
 # 初期化
