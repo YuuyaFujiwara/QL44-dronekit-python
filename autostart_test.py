@@ -72,7 +72,7 @@ while True:
     vehicle.mode = VehicleMode("MANUAL")
     time.sleep(2)
     
-    print("vehicle.mode = 'GUIDED'")
-    vehicle.mode = VehicleMode("GUIDED")
+    print("vehicle.mode = 'HOLD'")
+    vehicle.mode = VehicleMode("HOLD")
     time.sleep(2)
 
