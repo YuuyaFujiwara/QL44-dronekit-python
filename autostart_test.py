@@ -50,7 +50,7 @@ if not connection_string:
 
 
 # Connect to the Vehicle
-While True:
+while True:
     try:
         print('Connecting to vehicle on: %s' % connection_string)
         vehicle = connect(connection_string, wait_ready=True)
