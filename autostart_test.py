@@ -55,8 +55,8 @@ while True:
         print('Connecting to vehicle on: %s' % connection_string)
         vehicle = connect(connection_string, wait_ready=True)
     except Exception as e:
-        print(e)
-        time.sleep(1)
+        print("chatch exception:%s " % e)
+        time.sleep(10)
         print('Retry.')
     else:
         print('Connected.')
@@ -75,11 +75,11 @@ while True:
 # for debug 
 # とりあえず無限ループ
 while True:
-    print("vehicle.mode = 'MANUAL'")
+    #print("vehicle.mode = 'MANUAL'")
     vehicle.mode = VehicleMode("MANUAL")
     time.sleep(2)
     
-    print("vehicle.mode = 'HOLD'")
+    #print("vehicle.mode = 'HOLD'")
     vehicle.mode = VehicleMode("HOLD")
     time.sleep(2)
 
