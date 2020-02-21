@@ -32,7 +32,9 @@ global_flg_route_select_req = False
 global_flg_route_save_req = False
 global_flg_route_clear_req = False
 
-#home_path = "C:/Users/YuyaFujiwara/Documents/GitHub/dronekit-python/examples/totech_RouteSelect/"
+
+print( __file__ )
+
 home_path = expanduser("~")
 print('home path: %s' % home_path )
 route_path = home_path + "/QL44/Routes"
