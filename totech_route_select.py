@@ -530,6 +530,7 @@ def route_select_proc():
     else:
         print( "No route found\n")
         vehicle.commands.clear()
+        vehicle.commands.upload()
         vehicle.mode = VehicleMode("MANUAL")
 
     
