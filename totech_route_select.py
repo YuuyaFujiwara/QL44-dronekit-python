@@ -19,6 +19,7 @@ import os
 import math
 import time
 import glob
+import datetime
 from os.path import expanduser
 
 
@@ -32,7 +33,7 @@ global_flg_route_select_req = False
 global_flg_route_save_req = False
 global_flg_route_clear_req = False
 
-
+print( datetime.datetime.now() )
 print( __file__ )
 
 home_path = expanduser("~")
