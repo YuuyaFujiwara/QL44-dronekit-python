@@ -54,8 +54,18 @@ if not connection_string:
     connection_string = "127.0.0.1:14551"
 
 # Connect to the Vehicle
-print('Connecting to vehicle on: %s' % connection_string)
-vehicle = connect(connection_string, wait_ready=True)
+while True:
+    try:
+        print('Connecting to vehicle on: %s' % connection_string)
+        vehicle = connect(connection_string, wait_ready=True)
+    except Exception as e:
+        print("chatch exception:%s " % e)
+        time.sleep(10)
+        print('Retry.')
+    else:
+        print('Connected.')
+        break
+
 
 # Check that vehicle is armable. 
 # This ensures home_location is set (needed when saving WP file)
