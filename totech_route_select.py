@@ -53,19 +53,16 @@ sitl = None
 if not connection_string:
     connection_string = "127.0.0.1:14551"
 
-#Start SITL if no connection string specified
-if not connection_string:
-    import dronekit_sitl
-    sitl = dronekit_sitl.start_default()
-    connection_string = sitl.connection_string()
-
-
 # Connect to the Vehicle
 print('Connecting to vehicle on: %s' % connection_string)
 vehicle = connect(connection_string, wait_ready=True)
 
 # Check that vehicle is armable. 
 # This ensures home_location is set (needed when saving WP file)
+
+
+
+
 '''#Armableを待たない
 while not vehicle.is_armable:
     print(" Waiting for vehicle to initialise...")
